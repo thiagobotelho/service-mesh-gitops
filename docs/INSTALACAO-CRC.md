@@ -1,45 +1,87 @@
-# Instalação no CRC
+# Instalação no OpenShift Local
 
-## Estado e pré-requisitos
+## 1. Conferir os pré-requisitos
 
-Em 26/10/2026 foram consultados, somente em leitura, OpenShift 4.22.1, OVN-Kubernetes, RHCOS 9.8, catálogo `stable-3.4` com `servicemeshoperator3.v3.4.3` e exemplo de Istio/CNI `v1.30.5`. A política Red Hat lista OCP 4.20/4.21/4.22 para a linha 3.4. Isso verifica a escolha documental; não certifica suporte comercial do CRC nem comprova instalação.
-
-O nó tinha aproximadamente 25.747 MiB de memória em uso (64%) e CPU 5%. Refaça a medição antes de instalar. `mesh-lab` já contém `httpbin`, `sleep` e `intruso` criados previamente, sem propriedade deste laboratório. **A instalação está bloqueada até revisar a adoção ou migrar esses exercícios. Não apagar o namespace para resolver o conflito.**
-
-Ferramentas: `oc`, `kubectl` com Kustomize, Bash, curl, Python 3. Para validação estática: ShellCheck, Kubeconform 0.7.0, PyYAML e jsonschema; o CI instala versões explícitas. `istioctl` compatível é opcional para inspeção adicional. A consulta ao cluster usa `oc` disponível no host, sem presumir conectores de diagnóstico.
+Leia [REQUISITOS.md](REQUISITOS.md). Confira contexto, versão, capacidade e catálogo:
 
 ```bash
-# Executar nas fontes clonadas; comandos abaixo são orientações, não evidência de execução.
-bash scripts/preflight.sh
+oc config current-context
+oc whoami
+oc get clusterversion
+oc get nodes
+oc adm top nodes
+oc -n openshift-marketplace get packagemanifest servicemeshoperator3
 ```
 
-Todos os scripts operacionais fixam `--context=crc-admin` e `--server=https://api.crc.testing:6443`, verificam o servidor do contexto e exigem o único nó `crc`. Nenhum comando modifica o contexto global. Não reutilizar em ambiente corporativo.
-
-## Etapas de implantação, após autorização
-
-1. Revisar `docs/PROCEDENCIA.md`, versões, recursos e colisões. Executar `mesh-apps-lab/scripts/check-ownership.sh`; neste CRC a saída esperada atualmente é `BLOCKED` devido aos objetos anteriores.
-2. Revisar e aprovar a adoção de `httpbin`/`sleep`: comparar `oc get deployment,service,serviceaccount ... -o yaml` em armazenamento local protegido e o render; não versionar dumps contendo dados de credenciais. `intruso` permanece fora do gerenciamento. Nenhuma adoção foi executada nesta entrega.
-3. Iniciar pelo cenário `01-baseline` no único Application `mesh-apps-lab`. Sem sidecar e sem políticas, executar `verify-samples.sh` e registrar os dois HTTP 200.
-4. Selecionar `02-networkpolicy`, sincronizar com prune e testar; voltar ao baseline para restaurar conectividade.
-5. Criar apenas a Application opcional do Operator, sem sync automático. Sincronizar `service-mesh-gitops/operator`. Inspecionar Subscription e InstallPlan em `openshift-operators` e aprovar **somente o plano que instala a versão revisada**. A aprovação é Manual; não aprovar todos os planos do namespace compartilhado.
-6. Aguardar CSV `Succeeded` e CRDs `Established`. Sincronizar o plano de controle `overlays/desenvolvimento` e executar `service-mesh-gitops/scripts/verify-control-plane.sh`. Confirmar CNI, Istio, tag saudável e revisão real antes de avançar. Não aplicar um OperatorGroup adicional no namespace compartilhado.
-7. Selecionar os cenários `03-mesh`, `04-mtls-strict`, `05-authorization`, `06-defense-in-depth`, um de cada vez. A mudança de anotação no template cria novos pods. Aguardar rollout e verificar `istio-proxy` pronto em cada pod.
-8. Instalar `monitoring/` somente após existir `mesh-lab`. Publicar a proposta do dashboard em `grafana-gitops` após revisão e autorização. Gerar tráfego pequeno e executar `verify-observability.sh`.
-
-## Troca segura de cenário pelo Argo CD
-
-As Applications opcionais estão versionadas em `argocd-gitops/optional/service-mesh/`, fora do App-of-Apps. Não há sincronização automática. O mesmo Application `mesh-apps-lab` troca apenas `spec.source.path`.
+Revise o canal e a versão dos manifests conforme a compatibilidade do OpenShift. No checkout de service-mesh-gitops, renderize as entradas Kustomize antes de aplicar:
 
 ```bash
-# Exemplo operacional esperado, ainda não executado.
-oc --context=crc-admin --server=https://api.crc.testing:6443 -n openshift-gitops \
-  patch application mesh-apps-lab --type=merge \
-  -p '{"spec":{"source":{"path":"scenarios/04-mtls-strict"}}}'
-# Pela UI do Argo CD, revisar o diff e sincronizar com PRUNE habilitado.
+kubectl kustomize operator/
+kubectl kustomize overlays/desenvolvimento/
 ```
 
-`prune` remove a NetworkPolicy anterior ao entrar na fase de mTLS e remove `sleep-plain` ao avançar para autorização. Sem prune, políticas antigas podem mascarar resultados. Nunca criar seis Applications para o mesmo namespace nem usar `oc apply -k` sequencial sem remover os objetos exclusivos do cenário anterior. Sync waves não substituem os gates de readiness entre Applications.
+Se o namespace de aplicações já contiver recursos com os mesmos nomes, compare os manifests e planeje sua adoção ou migração. Não exclua o namespace para contornar conflitos de seletores. O script check-ownership.sh, no projeto mesh-apps-lab, identifica colisões de propriedade.
 
-## Versões e escopo
+## 2. Cadastrar as Applications no Argo CD
 
-`startingCSV` fixa o ponto inicial, mas não congela permanentemente o catálogo. O Approval Manual controla novos InstallPlans. Istio e CNI fixam `v1.30.5`; a revisão final é determinada pelo Operator. Sidecar é o modo escolhido; ambient/ZTunnel, Kiali, gateways, SPIRE e PKI externa não são instalados. Não se depende de recursos Technology Preview neste escopo. Integrações opcionais não foram homologadas.
+No checkout de argocd-gitops:
+
+```bash
+oc apply -k optional/service-mesh
+oc -n openshift-gitops get applications.argoproj.io
+```
+
+Esse diretório cadastra quatro Applications com sincronização manual: service-mesh-operator, service-mesh-control-plane, service-mesh-monitoring e mesh-apps-lab. Não instala os componentes até a sincronização. Não faz parte da stack base.
+
+## 3. Executar o cenário sem Mesh
+
+Selecione scenarios/01-baseline no Application mesh-apps-lab, revise o diff e sincronize. A base cria httpbin, sleep e sleep-denied, sem sidecars obrigatórios ou políticas. Aguarde os rollouts e execute verify-samples.sh.
+
+Selecione scenarios/02-networkpolicy para exercitar L3/L4 e execute test-networkpolicy.sh. Retorne ao baseline com prune antes de testar o Mesh.
+
+## 4. Instalar o Operator
+
+Sincronize somente service-mesh-operator. A Subscription usa aprovação Manual. Inspecione o InstallPlan e aprove apenas o plano da versão escolhida; não aprove todos os planos do namespace compartilhado.
+
+```bash
+oc -n openshift-operators get subscription,installplan,csv
+oc get crds | grep -E 'sailoperator|istio'
+```
+
+Aguarde CSV Succeeded e CRDs Established. Não crie outro OperatorGroup em openshift-operators.
+
+## 5. Instalar o plano de controle
+
+Sincronize service-mesh-control-plane. Esse estágio cria Istio, IstioCNI, namespaces e a tag de revisão. Aguarde condições saudáveis e execute, no projeto service-mesh-gitops:
+
+```bash
+bash scripts/verify-control-plane.sh
+oc get istios,istiocnis,istiorevisions,istiorevisiontags
+oc -n istio-system get pods
+oc -n istio-cni get pods
+```
+
+Consulte a revisão real pela tag e confirme sua correspondência com a revisão ativa do Istio. Não derive o nome da revisão apenas da versão. O plano de controle e o CNI devem estar prontos antes da injeção.
+
+## 6. Habilitar sidecar e políticas por fase
+
+Alterne um cenário por vez no mesmo Application mesh-apps-lab e sincronize com prune revisado:
+
+| Caminho | Objetivo |
+|---|---|
+| scenarios/03-mesh | injetar proxies e conferir conectividade |
+| scenarios/04-mtls-strict | exigir mTLS e testar cliente sem proxy |
+| scenarios/05-authorization | permitir somente a identidade, método e caminho autorizados |
+| scenarios/06-defense-in-depth | combinar NetworkPolicy e controles do Mesh |
+
+As anotações do template disparam novos pods. Confirme o container istio-proxy pronto em httpbin, sleep e sleep-denied. Não crie Applications concorrentes para cenários distintos: prune retira as políticas e os clientes exclusivos da fase anterior.
+
+## 7. Habilitar observabilidade
+
+Sincronize service-mesh-monitoring após criar os namespaces e verificar as CRDs do monitoramento. Confira os seletores do Prometheus. O dashboard é provisionado pelo overlay desenvolvimento do projeto grafana-gitops; não aplique em paralelo os assets de referência.
+
+Gere tráfego limitado, verifique as séries e abra o Grafana seguindo [GRAFANA.md](GRAFANA.md). Consulte [EXERCICIOS.md](EXERCICIOS.md) para os testes e [ROLLBACK-E-CLEANUP.md](ROLLBACK-E-CLEANUP.md) para desfazer a instalação.
+
+## Tracing opcional
+
+optional/tracing é uma alternativa à fonte do plano de controle, reutilizando o Collector existente. Substitua o caminho do mesmo Application, sem criar um segundo proprietário do Istio. Confira serviço OTLP, conectividade e spans no Tempo antes de depender do drilldown. Kiali, Vault e PKI externa são módulos de evolução separados.

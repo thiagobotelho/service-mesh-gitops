@@ -2,7 +2,7 @@
 
 | Sintoma | Conferência | Ação a revisar |
 |---|---|---|
-| BLOCKED por propriedade | check-ownership.sh; objetos anteriores httpbin/sleep | revisar diff de adoção ou migrar exercícios; não apagar mesh-lab |
+| BLOCKED por propriedade | check-ownership.sh; objetos com nomes conflitantes | revisar diff de adoção ou migrar exercícios; não apagar mesh-lab |
 | Subscription pendente | Subscription/InstallPlan/CSV em openshift-operators | aprovar somente InstallPlan revisado; conferir acesso registry.redhat.io |
 | CRD não encontrada | CSV e Established | aguardar Operator antes dos CRs; sem APIs do Service Mesh 2 |
 | Pod permanece 1/1 | tag, revisão real, namespace discovery, anotação de injeção, webhook | conferir Istio/CNI; recriar pelo rollout após diff, sem SCC anyuid |
@@ -23,4 +23,5 @@ oc --context=crc-admin --server=https://api.crc.testing:6443 -n mesh-lab get pee
 oc --context=crc-admin --server=https://api.crc.testing:6443 -n observability-apps get prometheus.monitoring.rhobs
 ```
 
-Evitar publicar logs completos: podem conter headers de autenticação e metadados de usuários. Extrair apenas campos necessários para a falha. A documentação descreve verificações esperadas; não comprova que o cenário foi executado.
+Evitar publicar logs completos: podem conter headers de autenticação e metadados de usuários. Extrair apenas campos necessários para a falha. 
+

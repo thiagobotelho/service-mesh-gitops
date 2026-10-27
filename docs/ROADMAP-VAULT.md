@@ -6,4 +6,5 @@ Antes de adotar PKI externa, estudar trust domain, raiz/intermediária, rotaçã
 
 Executar em fase separada: provar cadeia de confiança e SAN SPIFFE; testar rotação sem perda de tráfego; negar emissão a SA não autorizado; remover disponibilidade da CA temporariamente em teste controlado; validar rollback para a CA anterior sem misturar trust bundles. Registrar os resultados reais em Markdown. Não inserir root tokens, chaves privadas, unseal keys ou certificados privados nos repositórios.
 
-Kiali, ingress externo, múltiplas revisões canário, políticas de egress, HA/DR e teste de carga são evoluções independentes, não critérios já aprovados.
+Kiali, ingress externo, múltiplas revisões canário, políticas de egress, HA/DR e teste de carga são evoluções independentes, devem ser planejados em fases próprias.
+
