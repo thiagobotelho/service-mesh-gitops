@@ -1,51 +1,62 @@
-# Relatório da preparação do laboratório
+# Relatório da preparação e integração do laboratório
 
-## Entrega
+Atualização: 27/10/2026. O laboratório está versionado e integrado aos projetos pessoais existentes. A instalação do Mesh e sua homologação funcional permanecem pendentes.
 
-Implementação de infraestrutura Service Mesh 3 em Sidecar e seis cenários com exemplos oficiais httpbin/sleep. Não foram criadas APIs novas nem duplicados Prometheus/Grafana/Tempo. Documentação operacional, guias, arquitetura, exercícios, matriz e backlog em Markdown/português. Sem mudanças de autenticação.
+## Repositórios e fontes
 
-Fontes novas destinadas a:
+- [service-mesh-gitops](https://github.com/thiagobotelho/service-mesh-gitops): Operator OSSM 3, Istio/CNI v1.30.5, tag e descoberta, monitores RHOBS, tracing opcional, dashboard e guias.
+- [mesh-apps-lab](https://github.com/thiagobotelho/mesh-apps-lab): samples oficiais fixados por SHA, clientes distintos e seis cenários de NetworkPolicy, Mesh, mTLS e autorização.
 
-- [service-mesh-gitops](https://github.com/thiagobotelho/service-mesh-gitops)
-- [mesh-apps-lab](https://github.com/thiagobotelho/mesh-apps-lab)
+O conteúdo foi revisado para credenciais. Nenhuma senha, token, chave privada ou client secret foi publicado. Documentação e commits em português. Não foram criadas aplicações novas para substituir httpbin/sleep nem instâncias adicionais de Prometheus/Grafana/Tempo.
 
-Os dois repositórios pessoais foram criados públicos, com conteúdo sintético revisado para segredos. Não houve alteração de visibilidade do plugin privado.
+## Integrações concluídas
 
-| Projeto | Commit da implementação inicial | CI real concluído |
+| Projeto | PR integrado | Conteúdo |
 |---|---|---|
-| mesh-apps-lab | [cbb3d2f](https://github.com/thiagobotelho/mesh-apps-lab/commit/cbb3d2f847c22f694bdfdbe399db54dfd56616e4) | [PASS](https://github.com/thiagobotelho/mesh-apps-lab/actions/runs/40428004454) |
-| service-mesh-gitops | [4e5c13f](https://github.com/thiagobotelho/service-mesh-gitops/commit/4e5c13f7358d9dd6ded17109bf99eb7caec1f91d) | [PASS](https://github.com/thiagobotelho/service-mesh-gitops/actions/runs/40428019704) |
+| openshift-local-installer | [#2](https://github.com/thiagobotelho/openshift-local-installer/pull/2) | Referência e pré-requisitos do laboratório opcional |
+| argocd-gitops | [#3](https://github.com/thiagobotelho/argocd-gitops/pull/3) | Quatro Applications opcionais e guia OpenShift–Keycloak |
+| prometheus-gitops | [#2](https://github.com/thiagobotelho/prometheus-gitops/pull/2) | Seletores e grupo RHOBS para métricas Istio/Envoy |
+| grafana-gitops | [#2](https://github.com/thiagobotelho/grafana-gitops/pull/2) | Pasta e dashboard no overlay desenvolvimento |
+| tempo-gitops | [#1](https://github.com/thiagobotelho/tempo-gitops/pull/1) | Reutilização do Tempo e validação de tracing |
+| opentelemetry-gitops | [#2](https://github.com/thiagobotelho/opentelemetry-gitops/pull/2) | Recepção opcional de spans no Collector existente |
+| network-observability-gitops | [#2](https://github.com/thiagobotelho/network-observability-gitops/pull/2) | Distinção entre bloqueios L3/L4 e autorização L7 |
 
-Os 111 arquivos iniciais foram relidos pela árvore Git e comparados com hashes de blobs e modos locais, sem divergências. Esta atualização documental também reforça as verificações de STRICT/L7 na fase combinada e da tag saudável ligada à revisão ativa. Seu CI deve ser conferido no histórico de Actions do commit correspondente; a tabela acima identifica exatamente os primeiros commits testados, sem atribuir seus resultados a versões posteriores.
+Os sete PRs foram mesclados após CI aprovado no respectivo HEAD. O CI dos sete commits de merge também concluiu com sucesso. As bases e commits efetivos estão no histórico dos PRs; os HEADs do inventário representam a leitura inicial, não o estado após integração. A branch utilizada é laboratorio/service-mesh-crc.
 
-Validação local: 18 entradas Kustomize novas, schemas Kubernetes 1.35 em modo strict, schemas Sail/Grafana/RHOBS/OLM e políticas Istio, ShellCheck, YAML/JSON, contratos de erro e bloqueio de contexto divergente. As sete propostas existentes passaram em 39 verificações de patch/render. A API do Prometheus aceitou as 12 consultas do dashboard, mas sem séries de tráfego Istio. absent() retornou a sentinela de ausência; não se trata de dados de requisição.
+## Mesh e Argo CD
 
-Não foram criados PRs nesses dois repositórios novos: as publicações iniciais foram feitas diretamente em seus históricos recém-criados, com mensagens em português. Nenhuma branch padrão preexistente foi alterada.
+As quatro Applications estão versionadas em [argocd-gitops/optional/service-mesh](https://github.com/thiagobotelho/argocd-gitops/tree/main/optional/service-mesh), fora do App-of-Apps e sem sincronização automática. Na consulta de 27/10 não havia Application do Mesh criada no Argo CD do CRC. Integrar os YAMLs não instala o Operator nem adota os workloads preexistentes.
 
-## Integrações propostas
+O dashboard é gerenciado pelo overlay desenvolvimento de grafana-gitops. Não aplicar os assets de referência em paralelo para evitar dois proprietários dos mesmos CRs. O preenchimento real dos painéis depende da instalação e da coleta de métricas do Mesh.
 
-Sete diffs locais: Applications opcionais no argocd-gitops; pasta/dashboard no grafana-gitops; orientações de coleta RHOBS em prometheus-gitops; tracing opcional em opentelemetry-gitops e tempo-gitops; distinção L3/L4 no network-observability-gitops; referência opcional no openshift-local-installer. Nenhum commit, branch remoto ou PR nos projetos existentes nesta etapa. Branch proposta para a revisão: laboratorio/service-mesh-crc. Os HEADs auditados estão em INVENTARIO.md; revalidar antes de gravar.
+## Autenticação OpenShift–Keycloak
 
-client-ip-api-openshift permanece sem alterações: finalidade distinta. Conteúdo do repositório privado de estudos não é republicado.
+O client confidencial openshift é versionado em keycloak-gitops/base/keycloak-config-realm.yaml. O provedor OAuth e a CA estão em argocd-gitops/bootstrap/crc-keycloak-provider.yaml, fora do overlay normal. A credencial permanece no Secret openshift-config/keycloak-openshift-client-secret, chave clientSecret, fora do Git.
 
-## Validação e pendências
+A consulta de 27/10 confirmou o provedor no OAuth cluster e o Secret somente por metadados. Não repetiu login nem comparou valores de credenciais. O [guia de autenticação](https://github.com/thiagobotelho/argocd-gitops/blob/main/docs/AUTENTICACAO-KEYCLOAK-CRC.md) explica client, callback, claims, grupos e cuidados de reaplicação.
 
-Consultar [matriz](MATRIZ-VALIDACAO.md). A validação estática é separada da funcional. Não foram aplicados manifestos nem instalados Operators no CRC. Não há evidência de 200/403/mTLS/métricas reais deste novo laboratório. Há colisões nos objetos httpbin/sleep anteriores em mesh-lab, que precisam de revisão de adoção. Nenhuma alteração nesses recursos foi executada.
+## Validações e evidências
 
-## Próxima execução, após autorização
+- 18 pontos Kustomize novos e os renders dos projetos existentes passaram na preparação local.
+- Schemas Kubernetes 1.35, Sail, políticas Istio, Grafana, RHOBS e OLM verificados; admissão/CEL/webhooks reais continuam pendentes.
+- Contratos de erros rejeitam DNS/403 como prova de bloqueio OVN, limitam carga e bloqueiam contexto divergente.
+- A API Prometheus aceitou as 12 consultas, mas não havia séries Istio. absent() produziu apenas sentinela de ausência.
+- Hashes dos 111 arquivos inicialmente publicados foram comparados com fontes locais. CI real registrado em Actions e nos PRs.
+
+## Estado do cluster e bloqueios
+
+Em 26/10, a conferência final identificou cinco Applications Degraded por ResolutionFailed/ConstraintsNotSatisfiable nas Subscriptions. Em 27/10, as 12 Applications existentes estavam Healthy; não houve remediação OLM nesta integração. O incidente permanece histórico, sem atribuir causa não comprovada.
+
+A adoção dos exercícios existentes httpbin/sleep em mesh-lab segue BLOCKED: não possuem a marca de propriedade do novo laboratório. intruso permanece fora da gestão. Nenhum Operator, CNI ou política do Mesh foi aplicado nesta etapa.
+
+A matriz atual contém 14 PASS, 0 FAIL, 1 BLOCKED e 9 NOT_RUN. Ela não representa homologação funcional completa. Consultar [MATRIZ-VALIDACAO.md](MATRIZ-VALIDACAO.md).
+
+## Próxima etapa
 
 ```bash
-# Fontes clonadas do mesh-apps-lab:
+# Em mesh-apps-lab, somente leitura:
 bash scripts/preflight.sh
 bash scripts/check-ownership.sh
-# Resolver o BLOCKED de adoção por revisão do diff, sem excluir os exercícios.
-# Depois: seguir docs/INSTALACAO-CRC.md e sincronizar somente a fase revisada.
 ```
 
-Aprovar gravação dos diffs existentes e abertura dos PRs como etapas distintas. Instalação no CRC exige autorização própria e nova confirmação do contexto. Não realizar merge automaticamente.
-
-## Achado na conferência final do CRC
-
-Na leitura final, as 12 Applications existentes continuavam Synced, mas cinco estavam Degraded: argocd-cluster, metallb-cluster, network-observability, opentelemetry e prometheus-apps. As respectivas Subscriptions apresentavam ResolutionFailed/ConstraintsNotSatisfiable, informando pacote ou canal não encontrado no catálogo referenciado. Os pods inspecionados não apresentavam container ativo sem readiness. Isso descreve falha de resolução OLM, não comprova indisponibilidade de todos esses workloads.
-
-O snapshot inicial Healthy foi preservado como histórico; não representa o estado final. Nenhuma correção ou reinstalação foi executada no cluster nesta etapa. A instalação do novo Operator deve aguardar diagnóstico/normalização do catálogo, além da revisão da adoção de httpbin/sleep. O fato de packagemanifest listar Service Mesh não garante que o resolvedor OLM instalará todos os pacotes com sucesso.
+Após revisar/autorizar a adoção e a instalação no contexto crc-admin, seguir [INSTALACAO-CRC.md](INSTALACAO-CRC.md), sincronizar um cenário por vez com prune revisado e executar A–G com evidências reais. Tracing, Kiali, PKI externa, HA/DR e carga continuam pendentes ou fora desta fase.

@@ -4,7 +4,7 @@ O datasource existente é `prometheus-apps` (Prometheus-Apps), servido por `apps
 
 O MonitoringStack `apps-monitoring` e seu Prometheus usam os recursos **monitoring.rhobs/v1**, distintos dos recursos de mesmo nome do grupo monitoring.coreos.com. Os monitores deste laboratório usam o grupo RHOBS, `observability=platform`; seus namespaces recebem `observability=enabled`. Um monitor coreos.com poderia existir e ainda não ser coletado por este Prometheus. O PodMonitor coleta a porta nomeada `http-envoy-prom`, caminho `/stats/prometheus`, somente no container `istio-proxy`. Confirmar o nome na revisão instalada. Istiod usa `http-monitoring`, `/metrics`.
 
-O JSON em `service-mesh-gitops/assets/dashboard-service-mesh.json` é a fonte revisável dos painéis. Os CRs de referência estão em `assets/grafana/`. A proposta de integração copia esses CRs para o overlay desenvolvimento de `grafana-gitops`. **Escolher um único proprietário**: se a proposta for integrada, não aplicar assets/grafana separadamente. Eles não estão na base de infraestrutura.
+O JSON em `service-mesh-gitops/assets/dashboard-service-mesh.json` é a fonte revisável dos painéis. Os CRs de referência estão em `assets/grafana/`. A integração aprovada copia esses CRs para o overlay desenvolvimento de `grafana-gitops`. **Manter um único proprietário**: não aplicar assets/grafana separadamente. Eles não estão na base de infraestrutura.
 
 ## Consultas e unidade
 

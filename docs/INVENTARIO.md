@@ -17,4 +17,4 @@ Foram inspecionados README, árvore de fontes, workflows e manifestos aplicávei
 
 Correção descoberta durante preparação: usar `monitoring.rhobs/v1`, porque o Prometheus do COO não seleciona os monitores do grupo coreos.com. Recursos de ambos os grupos coexistem no cluster. Label de namespace `observability=enabled`; label de PodMonitor/ServiceMonitor `observability=platform`.
 
-Os dois novos repositórios não existiam na consulta inicial. Publicação e CI precisam ser registrados no relatório final com URL e commit efetivos. Mudanças nos existentes permanecem propostas locais até autorização de gravação e de PR.
+Os dois novos repositórios não existiam na consulta inicial e já foram publicados. Em 27/10/2026, as sete integrações nos projetos existentes foram mescladas após CI aprovado. As referências acima preservam o inventário inicial; os commits finais e PRs estão no [relatório atualizado](RELATORIO-FINAL.md).
