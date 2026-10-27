@@ -8,3 +8,5 @@ while IFS= read -r -d '' entrada; do
 done < <(find "$RAIZ" -name kustomization.yaml -print0)
 python3 "$RAIZ/tests/validate.py"
 python3 "$RAIZ/tests/test-scripts.py"
+
+python3 "$(dirname "$0")/../tests/test-prometheus-response.py"
