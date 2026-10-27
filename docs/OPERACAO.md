@@ -2,7 +2,7 @@
 
 ## Separar infraestrutura e exercícios
 
-No Argo CD, sincronize somente as Applications service-mesh-operator, service-mesh-control-plane e service-mesh-monitoring. Respeite a ordem de dependências.
+No Argo CD, sincronize a Application `service-mesh`, que reúne Operator, CNI, plano de controle, tag e monitores. As sync waves respeitam a ordem de dependências; acompanhe a saúde de cada etapa.
 
 As APIs de teste são operadas manualmente no repositório mesh-apps-lab. Para alternar cenários, use oc apply -k e remova apenas os recursos exclusivos da fase anterior conforme [APLICACAO-MANUAL.md](APLICACAO-MANUAL.md).
 
@@ -33,4 +33,4 @@ Revise compatibilidade e notas de versão. Atualize Subscription, versão Istio/
 
 ## Desinstalar
 
-Retorne ao cenário sem Mesh e confirme ausência de proxies. Retire as Applications sem exclusão em cascata e execute somente os procedimentos de [limpeza](ROLLBACK-E-CLEANUP.md). Não remova CNI compartilhado, CRDs, namespace ou plataformas de observabilidade por um cleanup genérico.
+Retorne ao cenário sem Mesh e confirme ausência de proxies. Retire a Application sem exclusão em cascata e execute somente os procedimentos de [limpeza](ROLLBACK-E-CLEANUP.md). Não remova CNI compartilhado, CRDs, namespace ou plataformas de observabilidade por um cleanup genérico.

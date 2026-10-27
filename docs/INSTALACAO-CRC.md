@@ -22,7 +22,7 @@ kubectl kustomize overlays/desenvolvimento/
 
 Se o namespace de aplicações já contiver recursos com os mesmos nomes, compare os manifests e planeje sua adoção ou migração. Não exclua o namespace para contornar conflitos de seletores. O script check-ownership.sh, no projeto mesh-apps-lab, identifica colisões de propriedade.
 
-## 2. Cadastrar as Applications no Argo CD
+## 2. Cadastrar a Application no Argo CD
 
 No checkout de argocd-gitops:
 
@@ -31,7 +31,7 @@ oc apply -k optional/service-mesh
 oc -n openshift-gitops get applications.argoproj.io
 ```
 
-Esse diretório cadastra três Applications de infraestrutura com sincronização manual: service-mesh-operator, service-mesh-control-plane e service-mesh-monitoring. As APIs de teste ficam fora do Argo CD. Não instala os componentes até a sincronização. Não faz parte da stack base.
+Esse diretório cadastra a Application `service-mesh`, com sincronização manual, reunindo Operator, CNI, plano de controle, tag e monitores em etapas ordenadas por sync waves. As APIs de teste ficam fora do Argo CD. Os componentes são instalados durante a sincronização. Configure previamente as verificações de saúde Sail de argocd-gitops/base/argocd.yaml e confira as CRDs de monitoramento. Não faz parte da stack base.
 
 ## 3. Preparar os exercícios manuais
 
@@ -39,18 +39,18 @@ No repositório mesh-apps-lab, revise os recursos existentes e siga o [guia manu
 
 ## 4. Instalar o Operator
 
-Sincronize somente service-mesh-operator. A Subscription usa aprovação Manual. Inspecione o InstallPlan e aprove apenas o plano da versão escolhida; não aprove todos os planos do namespace compartilhado.
+Sincronize `service-mesh`. A etapa da Subscription precede os recursos Sail; acompanhe sua saúde no Argo CD. A Subscription usa aprovação Manual. Inspecione o InstallPlan e aprove apenas o plano da versão escolhida; não aprove todos os planos do namespace compartilhado.
 
 ```bash
 oc -n openshift-operators get subscription,installplan,csv
 oc get crds | grep -E 'sailoperator|istio'
 ```
 
-Aguarde CSV Succeeded e CRDs Established. Não crie outro OperatorGroup em openshift-operators.
+Na primeira instalação, a sincronização aguarda aprovação do InstallPlan; após aprová-lo, aguarde CSV Succeeded e CRDs Established. A opção SkipDryRunOnMissingResource dos recursos Sail não substitui esse requisito. Não crie outro OperatorGroup em openshift-operators.
 
 ## 5. Instalar o plano de controle
 
-Sincronize service-mesh-control-plane. Esse estágio cria Istio, IstioCNI, namespaces e a tag de revisão. Aguarde condições saudáveis e execute, no projeto service-mesh-gitops:
+Após a instalação do Operator, a mesma sincronização prossegue com IstioCNI, Istio e a tag de revisão. Os namespaces de infraestrutura são criados na primeira wave. Aguarde condições saudáveis e execute, no projeto service-mesh-gitops:
 
 ```bash
 bash scripts/verify-control-plane.sh
@@ -76,10 +76,10 @@ As anotações do template disparam novos pods. Confirme o container istio-proxy
 
 ## 7. Habilitar observabilidade
 
-Sincronize service-mesh-monitoring após criar os namespaces e verificar as CRDs do monitoramento. Confira os seletores do Prometheus. O dashboard é provisionado pelo overlay desenvolvimento do projeto grafana-gitops; não aplique em paralelo os assets de referência.
+Os monitores integram a última wave da Application `service-mesh`. As CRDs de monitoramento devem estar instaladas antes da sincronização. Confira os seletores do Prometheus. O dashboard é provisionado pelo overlay desenvolvimento do projeto grafana-gitops; não aplique em paralelo os assets de referência.
 
 Gere tráfego limitado, verifique as séries e abra o Grafana seguindo [GRAFANA.md](GRAFANA.md). Consulte [EXERCICIOS.md](EXERCICIOS.md) para os testes e [ROLLBACK-E-CLEANUP.md](ROLLBACK-E-CLEANUP.md) para desfazer a instalação.
 
 ## Tracing opcional
 
-optional/tracing é uma alternativa à fonte do plano de controle, reutilizando o Collector existente. Substitua o caminho do mesmo Application, sem criar um segundo proprietário do Istio. Confira serviço OTLP, conectividade e spans no Tempo antes de depender do drilldown. Kiali, Vault e PKI externa são módulos de evolução separados.
+optional/tracing é uma alternativa à fonte do plano de controle, reutilizando o Collector existente. Substitua o caminho da mesma Application por optional/tracing, que inclui toda a infraestrutura, sem criar um segundo proprietário do Istio. Confira serviço OTLP, conectividade e spans no Tempo antes de depender do drilldown. Kiali, Vault e PKI externa são módulos de evolução separados.

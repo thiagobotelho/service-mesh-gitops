@@ -61,6 +61,17 @@ else:
   for d in ds:
    if d['apiVersion'] in ['sailoperator.io/v1','monitoring.rhobs/v1','grafana.integreatly.org/v1beta1']:
     schema=json.loads((root/'tests/schemas'/f'{d["kind"]}.json').read_text());jsonschema.validate(d,schema)
+ unified=builds['overlays/desenvolvimento']
+ expected={'Namespace':-40,'Subscription':-30,'IstioCNI':-20,'Istio':-10,'IstioRevisionTag':0,'PodMonitor':10,'ServiceMonitor':10}
+ require(len(unified)==8,'infraestrutura unificada incompleta ou contém APIs')
+ for d in unified:
+  require(d['kind'] in expected,'recurso fora da infraestrutura')
+  ann=d['metadata'].get('annotations',{})
+  require(int(ann['argocd.argoproj.io/sync-wave'])==expected[d['kind']],'ordem de dependência incorreta')
+  if d['apiVersion'].startswith('sailoperator.io/'):
+   require(ann.get('argocd.argoproj.io/sync-options')=='SkipDryRunOnMissingResource=true','dry-run bloqueia instalação inicial de CRDs Sail')
+ require(next(d for d in unified if d['kind']=='Subscription')['spec']['installPlanApproval']=='Manual','aprovação do Operator alterada')
+ require({(d['kind'],d['metadata']['name']) for d in unified}.issubset({(d['kind'],d['metadata']['name']) for d in builds['optional/tracing']}),'tracing perde a infraestrutura unificada')
  control=builds['base']
  tag=next(d for d in control if d['kind']=='IstioRevisionTag')
  istio=next(d for d in control if d['kind']=='Istio')
