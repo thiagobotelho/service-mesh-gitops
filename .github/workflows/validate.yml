@@ -1,0 +1,26 @@
+name: Validar laboratório
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obter fontes
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Instalar validadores
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y shellcheck
+          python3 -m pip install PyYAML==6.0.3 jsonschema==4.26.0 yamllint==1.37.1
+      - name: Obter validador Kubernetes fixo
+        run: |
+          curl -fsSL https://github.com/yannh/kubeconform/releases/download/v0.7.0/kubeconform-linux-amd64.tar.gz -o /tmp/kubeconform.tar.gz
+          echo 'c31518ddd122663b3f3aa874cfe8178cb0988de944f29c74a0b9260920d115d3  /tmp/kubeconform.tar.gz' | sha256sum --check
+          tar -xzf /tmp/kubeconform.tar.gz -C /tmp kubeconform
+          sudo install /tmp/kubeconform /usr/local/bin/kubeconform
+      - name: Validar YAML
+        run: |
+          yamllint -d '{extends: relaxed, rules: {line-length: disable, truthy: disable}}' .
+      - name: Renderizar e verificar contratos
+        run: bash scripts/validate.sh

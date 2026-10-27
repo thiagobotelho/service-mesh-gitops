@@ -1,0 +1,12 @@
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: mesh-lab-tracing
+  namespace: mesh-lab
+  labels:
+    laboratorio.sre.dev/proprietario: service-mesh-gitops
+spec:
+  tracing:
+  - providers:
+    - name: otel-existente
+    randomSamplingPercentage: 100

@@ -1,0 +1,28 @@
+apiVersion: sailoperator.io/v1
+kind: Istio
+metadata:
+  name: mesh-crc
+  labels:
+    laboratorio.sre.dev/proprietario: service-mesh-gitops
+spec:
+  namespace: istio-system
+  version: v1.30.5
+  updateStrategy:
+    type: InPlace
+  values:
+    pilot:
+      autoscaleEnabled: false
+      replicaCount: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+    meshConfig:
+      trustDomain: cluster.local
+      discoverySelectors:
+      - matchLabels:
+          istio-discovery: mesh-crc
+      accessLogFile: /dev/stdout

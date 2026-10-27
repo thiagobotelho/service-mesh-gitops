@@ -1,0 +1,9 @@
+apiVersion: sailoperator.io/v1
+kind: IstioCNI
+metadata:
+  name: default
+  labels:
+    laboratorio.sre.dev/proprietario: service-mesh-gitops
+spec:
+  namespace: istio-cni
+  version: v1.30.5

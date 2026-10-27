@@ -1,0 +1,10 @@
+apiVersion: sailoperator.io/v1
+kind: IstioRevisionTag
+metadata:
+  name: mesh-crc
+  labels:
+    laboratorio.sre.dev/proprietario: service-mesh-gitops
+spec:
+  targetRef:
+    kind: Istio
+    name: mesh-crc

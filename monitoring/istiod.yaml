@@ -1,0 +1,19 @@
+apiVersion: monitoring.rhobs/v1
+kind: ServiceMonitor
+metadata:
+  name: mesh-crc-istiod
+  namespace: istio-system
+  labels:
+    observability: platform
+    laboratorio.sre.dev/proprietario: service-mesh-gitops
+spec:
+  namespaceSelector:
+    matchNames:
+    - istio-system
+  selector:
+    matchLabels:
+      app: istiod
+  endpoints:
+  - port: http-monitoring
+    path: /metrics
+    interval: 30s
