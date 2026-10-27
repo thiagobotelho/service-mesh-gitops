@@ -61,6 +61,9 @@ else:
   for d in ds:
    if d['apiVersion'] in ['sailoperator.io/v1','monitoring.rhobs/v1','grafana.integreatly.org/v1beta1']:
     schema=json.loads((root/'tests/schemas'/f'{d["kind"]}.json').read_text());jsonschema.validate(d,schema)
+ monitors=builds['monitoring']
+ require(all(d['metadata'].get('namespace')=='istio-system' for d in monitors),'monitores fora da infraestrutura')
+ require(next(d for d in monitors if d['kind']=='PodMonitor')['spec']['namespaceSelector']['matchNames']==['mesh-lab'],'namespace de coleta alterado')
  dash=json.loads((root/'assets/dashboard-service-mesh.json').read_text())
  require(dash['title']=='OpenShift Service Mesh — CRC Lab','título do dashboard')
  targets=[t['expr'] for p in dash['panels'] for t in p['targets']]
