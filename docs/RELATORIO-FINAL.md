@@ -43,3 +43,9 @@ bash scripts/check-ownership.sh
 ```
 
 Aprovar gravação dos diffs existentes e abertura dos PRs como etapas distintas. Instalação no CRC exige autorização própria e nova confirmação do contexto. Não realizar merge automaticamente.
+
+## Achado na conferência final do CRC
+
+Na leitura final, as 12 Applications existentes continuavam Synced, mas cinco estavam Degraded: argocd-cluster, metallb-cluster, network-observability, opentelemetry e prometheus-apps. As respectivas Subscriptions apresentavam ResolutionFailed/ConstraintsNotSatisfiable, informando pacote ou canal não encontrado no catálogo referenciado. Os pods inspecionados não apresentavam container ativo sem readiness. Isso descreve falha de resolução OLM, não comprova indisponibilidade de todos esses workloads.
+
+O snapshot inicial Healthy foi preservado como histórico; não representa o estado final. Nenhuma correção ou reinstalação foi executada no cluster nesta etapa. A instalação do novo Operator deve aguardar diagnóstico/normalização do catálogo, além da revisão da adoção de httpbin/sleep. O fato de packagemanifest listar Service Mesh não garante que o resolvedor OLM instalará todos os pacotes com sucesso.

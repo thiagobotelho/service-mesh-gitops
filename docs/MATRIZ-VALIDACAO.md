@@ -15,6 +15,7 @@ Data: 26/10/2026. PASS exige execução. Saídas esperadas dos tutoriais não co
 | STAT-06 | Schemas Sail/Grafana/RHOBS | PASS | extração oficial/CRDs; não substitui admissão no servidor |
 | STAT-07 | Schemas Kubernetes 1.35 | PASS | Kubeconform 0.7.0 strict; CRDs validadas separadamente |
 | OBS-00 | Sintaxe das 12 consultas PromQL | PASS | API real Prometheus aceitou; sem séries Istio; absent() retornou sentinela |
+| CRC-OLM | Saúde final das Subscriptions existentes | FAIL | cinco Applications Synced/Degraded por ResolutionFailed/ConstraintsNotSatisfiable; catálogo não resolveu pacotes/canal das Subscriptions |
 | OWN-01 | Adoção dos exercícios preexistentes | BLOCKED | httpbin/sleep sem marca de propriedade; revisar colisão antes de sincronizar |
 | INT-01 | Publicação dos diffs nos sete existentes | NOT_RUN | propostas locais; nenhum commit ou PR realizado |
 | CI-01 | GitHub Actions dos novos repositórios | PASS | pipelines de implementação concluídos; commits e runs no relatório final |
@@ -28,4 +29,4 @@ Data: 26/10/2026. PASS exige execução. Saídas esperadas dos tutoriais não co
 | OPT-01 | Tracing via Collector/Tempo existente | NOT_RUN | módulo opcional; sem trace desta implantação |
 | OPT-02 | Kiali, Vault/PKI externa, HA/DR/carga | NOT_RUN | fora desta fase; backlog explícito |
 
-Nenhum FAIL dinâmico foi observado, porque os novos cenários não foram executados. Isso não equivale a aprovação funcional. BLOCKED registra a colisão encontrada; NOT_RUN registra trabalho ainda não executado. Publicação de YAML e CI verde não homologam o laboratório no cluster.
+Há FAIL no inventário final da infraestrutura OLM existente. Nenhum teste dinâmico dos novos cenários foi executado. Isso não equivale a aprovação funcional. BLOCKED registra a colisão encontrada; NOT_RUN registra trabalho ainda não executado. Publicação de YAML e CI verde não homologam o laboratório no cluster.
