@@ -1,6 +1,6 @@
 # Exercícios por fase
 
-A tabela apresenta os resultados esperados e os scripts de cada fase. Instale os pré-requisitos e sincronize o cenário correspondente antes de executar.
+A tabela apresenta os resultados esperados e os scripts de cada fase. Instale os pré-requisitos e aplique manualmente o cenário correspondente antes de executar.
 
 | Fase | Teste | Resultado esperado | Script no mesh-apps-lab |
 |---|---|---|---|

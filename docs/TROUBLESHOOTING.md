@@ -8,7 +8,7 @@
 | Pod permanece 1/1 | tag, revisão real, namespace discovery, anotação de injeção, webhook | conferir Istio/CNI; recriar pelo rollout após diff, sem SCC anyuid |
 | Erro de init/proxy/SCC | eventos sanitizados; imagem; UID atribuído | manter restricted-v2 nos workloads; não conceder privilégios ao cliente |
 | HTTP 403 para sleep | SA efetiva, trustDomain e caminho/método | corrigir principal específico; não liberar curinga |
-| Timeout em fase 05 | NetworkPolicies remanescentes; prune da fase 02 | eliminar somente política do cenário anterior via Argo |
+| Timeout em fase 05 | NetworkPolicies remanescentes da fase anterior | remover manualmente somente a política pertencente aos exercícios |
 | Curl 6 | DNS | corrigir DNS; não classificar como sucesso de política |
 | Prometheus sem série | grupo RHOBS, seletores e targets/ports | revisar PodMonitor e estado do scrape; aguardar tráfego e duas coletas |
 | Dashboard vazio | datasource UID, reporter, labels, unidade e tempo | descobrir séries reais; não substituir ausência por números fictícios |

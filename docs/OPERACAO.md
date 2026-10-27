@@ -1,15 +1,10 @@
 # Operação do Service Mesh
 
-## Selecionar cenário
+## Separar infraestrutura e exercícios
 
-Use um único Application mesh-apps-lab para todos os cenários. Modifique spec.source.path e sincronize com prune revisado:
+No Argo CD, sincronize somente as Applications service-mesh-operator, service-mesh-control-plane e service-mesh-monitoring. Respeite a ordem de dependências.
 
-```bash
-oc -n openshift-gitops patch application mesh-apps-lab --type=merge \
-  -p '{"spec":{"source":{"path":"scenarios/04-mtls-strict"}}}'
-```
-
-Na interface do Argo CD, revise o diff e selecione Sync com prune. Aguarde o fim da operação e os rollouts antes de testar. [Exercícios](EXERCICIOS.md).
+As APIs de teste são operadas manualmente no repositório mesh-apps-lab. Para alternar cenários, use oc apply -k e remova apenas os recursos exclusivos da fase anterior conforme [APLICACAO-MANUAL.md](APLICACAO-MANUAL.md).
 
 ## Consultar saúde
 

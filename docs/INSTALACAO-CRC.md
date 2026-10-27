@@ -31,13 +31,11 @@ oc apply -k optional/service-mesh
 oc -n openshift-gitops get applications.argoproj.io
 ```
 
-Esse diretório cadastra quatro Applications com sincronização manual: service-mesh-operator, service-mesh-control-plane, service-mesh-monitoring e mesh-apps-lab. Não instala os componentes até a sincronização. Não faz parte da stack base.
+Esse diretório cadastra três Applications de infraestrutura com sincronização manual: service-mesh-operator, service-mesh-control-plane e service-mesh-monitoring. As APIs de teste ficam fora do Argo CD. Não instala os componentes até a sincronização. Não faz parte da stack base.
 
-## 3. Executar o cenário sem Mesh
+## 3. Preparar os exercícios manuais
 
-Selecione scenarios/01-baseline no Application mesh-apps-lab, revise o diff e sincronize. A base cria httpbin, sleep e sleep-denied, sem sidecars obrigatórios ou políticas. Aguarde os rollouts e execute verify-samples.sh.
-
-Selecione scenarios/02-networkpolicy para exercitar L3/L4 e execute test-networkpolicy.sh. Retorne ao baseline com prune antes de testar o Mesh.
+No repositório mesh-apps-lab, revise os recursos existentes e siga o [guia manual](APLICACAO-MANUAL.md). Para o baseline sem Mesh, aplique scenarios/01-baseline com oc e execute verify-samples.sh. O Argo gerencia somente a infraestrutura; não cria, adota ou reinicia as APIs dos exercícios.
 
 ## 4. Instalar o Operator
 
@@ -65,7 +63,7 @@ Consulte a revisão real pela tag e confirme sua correspondência com a revisão
 
 ## 6. Habilitar sidecar e políticas por fase
 
-Alterne um cenário por vez no mesmo Application mesh-apps-lab e sincronize com prune revisado:
+No checkout de mesh-apps-lab, aplique um cenário por vez com oc apply -k. Remova explicitamente os recursos exclusivos da fase anterior, conforme [APLICACAO-MANUAL.md](APLICACAO-MANUAL.md):
 
 | Caminho | Objetivo |
 |---|---|
@@ -74,7 +72,7 @@ Alterne um cenário por vez no mesmo Application mesh-apps-lab e sincronize com 
 | scenarios/05-authorization | permitir somente a identidade, método e caminho autorizados |
 | scenarios/06-defense-in-depth | combinar NetworkPolicy e controles do Mesh |
 
-As anotações do template disparam novos pods. Confirme o container istio-proxy pronto em httpbin, sleep e sleep-denied. Não crie Applications concorrentes para cenários distintos: prune retira as políticas e os clientes exclusivos da fase anterior.
+As anotações do template disparam novos pods. Confirme o container istio-proxy pronto em httpbin, sleep e sleep-denied. Não cadastre as APIs no Argo CD. Como oc apply não executa prune, retire manualmente as políticas e os clientes exclusivos da fase anterior.
 
 ## 7. Habilitar observabilidade
 

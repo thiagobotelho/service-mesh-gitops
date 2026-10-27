@@ -8,9 +8,9 @@ done
 "${OC[@]}" wait --for=condition=Ready istio/mesh-crc --timeout=180s
 "${OC[@]}" get istio mesh-crc
 "${OC[@]}" get istiorevisions,istiorevisiontags
-"${OC[@]}" wait --for=jsonpath='{.status.state}'=Healthy istiorevisiontag/mesh-crc --timeout=120s
-REVISAO=$("${OC[@]}" get istiorevisiontag mesh-crc -o jsonpath='{.status.istioRevision}')
-[[ -n "$REVISAO" ]] || bloqueado 'tag mesh-crc ainda não tem revisão'
+"${OC[@]}" wait --for=jsonpath='{.status.state}'=Healthy istiorevisiontag/mesh-stable --timeout=120s
+REVISAO=$("${OC[@]}" get istiorevisiontag mesh-stable -o jsonpath='{.status.istioRevision}')
+[[ -n "$REVISAO" ]] || bloqueado 'tag mesh-stable ainda não tem revisão'
 ATIVA=$("${OC[@]}" get istio mesh-crc -o jsonpath='{.status.activeRevisionName}')
 [[ "$ATIVA" == "$REVISAO" ]] || bloqueado 'a tag não referencia a revisão ativa do Istio'
 "${OC[@]}" get istiorevision "$REVISAO"
