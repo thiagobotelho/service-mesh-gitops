@@ -18,12 +18,13 @@ for ((i=0; i<20; i++)); do
 done
 [[ "$PRONTO" == 1 ]] || bloqueado 'Prometheus não ficou pronto'
 for CONSULTA in  'istio_requests_total{destination_workload_namespace="mesh-lab",reporter="destination"}'  'istio_request_duration_milliseconds_bucket{destination_workload_namespace="mesh-lab",reporter="destination"}'  'istio_request_duration_milliseconds_sum{destination_workload_namespace="mesh-lab",reporter="destination"}'  'istio_request_duration_milliseconds_count{destination_workload_namespace="mesh-lab",reporter="destination"}'  'istio_requests_total{destination_workload_namespace="mesh-lab",reporter="destination",connection_security_policy="mutual_tls"}'  'up{namespace="mesh-lab"}'; do
-  curl -fsS --max-time 5 --get --data-urlencode "query=$CONSULTA" "http://127.0.0.1:$PORTA/api/v1/query" | python3 -c '
-import sys,json
-r=json.load(sys.stdin)
-if r.get("status")!="success" or not r.get("data",{}).get("result"):sys.exit(2)
-for x in r["data"]["result"]:print(x.get("metric"),x.get("value"))
-'
+  MODO=serie
+  [[ "$CONSULTA" == up\{* ]] && MODO=alvo
+  curl -fsS --max-time 5 --get --data-urlencode "query=$CONSULTA" "http://127.0.0.1:$PORTA/api/v1/query" |
+    python3 "$(dirname "$0")/check-prometheus-response.py" "$MODO"
+  # timestamp() consulta a data da amostra, não apenas o horário da avaliação.
+  curl -fsS --max-time 5 --get --data-urlencode "query=time() - timestamp($CONSULTA)" "http://127.0.0.1:$PORTA/api/v1/query" |
+    python3 "$(dirname "$0")/check-prometheus-response.py" frescor
   printf 'PASS: série encontrada: %s\n' "$CONSULTA"
 done
 printf 'PENDENTE: conferir os gráficos no Grafana e revisar todos os labels; CR existente não prova dados visuais\n'
