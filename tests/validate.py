@@ -69,6 +69,7 @@ else:
  monitors=builds['monitoring']
  require(all(d['metadata'].get('namespace')=='istio-system' for d in monitors),'monitores fora da infraestrutura')
  require(next(d for d in monitors if d['kind']=='PodMonitor')['spec']['namespaceSelector']['matchNames']==['mesh-lab'],'namespace de coleta alterado')
+ require(next(d for d in monitors if d['kind']=='ServiceMonitor')['spec']['selector']['matchExpressions']==[{'key':'istio.io/tag','operator':'DoesNotExist'}],'aliases de tag duplicam o scrape de Istiod')
  dash=json.loads((root/'assets/dashboard-service-mesh.json').read_text())
  require(dash['title']=='OpenShift Service Mesh — CRC Lab','título do dashboard')
  targets=[t['expr'] for p in dash['panels'] for t in p['targets']]
