@@ -16,7 +16,7 @@ Exemplos e infraestrutura declarativos para estudar rede, segurança e observabi
 | Caminho | Uso |
 |---|---|
 | operator/ | Subscription 3.4.3, canal stable-3.4, aprovação Manual |
-| overlays/desenvolvimento/ | Istio v1.30.5, IstioCNI, tag mesh-crc e namespaces |
+| overlays/desenvolvimento/ | Istio v1.30.5, IstioCNI, tag mesh-stable e namespaces |
 | monitoring/ | PodMonitor/ServiceMonitor RHOBS para Prometheus existente |
 | optional/tracing/ | alternativa ao overlay principal, com provider OTLP existente |
 | assets/grafana/ | CRs de referência; integração no grafana-gitops |

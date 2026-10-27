@@ -61,6 +61,11 @@ else:
   for d in ds:
    if d['apiVersion'] in ['sailoperator.io/v1','monitoring.rhobs/v1','grafana.integreatly.org/v1beta1']:
     schema=json.loads((root/'tests/schemas'/f'{d["kind"]}.json').read_text());jsonschema.validate(d,schema)
+ control=builds['base']
+ tag=next(d for d in control if d['kind']=='IstioRevisionTag')
+ istio=next(d for d in control if d['kind']=='Istio')
+ require(tag['metadata']['name']!=istio['metadata']['name'],'tag colide com a revisão InPlace')
+ require(tag['spec']['targetRef']=={'kind':'Istio','name':istio['metadata']['name']},'tag aponta para outro Istio')
  monitors=builds['monitoring']
  require(all(d['metadata'].get('namespace')=='istio-system' for d in monitors),'monitores fora da infraestrutura')
  require(next(d for d in monitors if d['kind']=='PodMonitor')['spec']['namespaceSelector']['matchNames']==['mesh-lab'],'namespace de coleta alterado')
