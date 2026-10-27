@@ -1,6 +1,6 @@
 # Matriz de validação
 
-Data: 26/10/2026. PASS exige execução. Saídas esperadas dos tutoriais não contam como evidência.
+Atualização: 27/10/2026; preservadas as evidências estáticas de 26/10/2026. PASS exige execução. Saídas esperadas dos tutoriais não contam como evidência.
 
 | ID | Verificação | Estado | Evidência / pendência |
 |---|---|---|---|
@@ -15,9 +15,9 @@ Data: 26/10/2026. PASS exige execução. Saídas esperadas dos tutoriais não co
 | STAT-06 | Schemas Sail/Grafana/RHOBS | PASS | extração oficial/CRDs; não substitui admissão no servidor |
 | STAT-07 | Schemas Kubernetes 1.35 | PASS | Kubeconform 0.7.0 strict; CRDs validadas separadamente |
 | OBS-00 | Sintaxe das 12 consultas PromQL | PASS | API real Prometheus aceitou; sem séries Istio; absent() retornou sentinela |
-| CRC-OLM | Saúde final das Subscriptions existentes | FAIL | cinco Applications Synced/Degraded por ResolutionFailed/ConstraintsNotSatisfiable; catálogo não resolveu pacotes/canal das Subscriptions |
+| CRC-OLM | Saúde atual da stack existente | PASS | leitura de 27/10: 12 Applications Healthy; falha OLM de 26/10 preservada como histórico no relatório |
 | OWN-01 | Adoção dos exercícios preexistentes | BLOCKED | httpbin/sleep sem marca de propriedade; revisar colisão antes de sincronizar |
-| INT-01 | Publicação dos diffs nos sete existentes | NOT_RUN | propostas locais; nenhum commit ou PR realizado |
+| INT-01 | Integração nos sete projetos existentes | PASS | sete PRs mesclados; CI de todos os commits de merge concluído com sucesso |
 | CI-01 | GitHub Actions dos novos repositórios | PASS | pipelines de implementação concluídos; commits e runs no relatório final |
 | A | Baseline sleep e sleep-denied HTTP 200 | NOT_RUN | implantação ainda não autorizada; recursos não aplicados |
 | B | NetworkPolicy: 200 e timeout, DNS preservado | NOT_RUN | executar cenário 02 |
@@ -29,4 +29,4 @@ Data: 26/10/2026. PASS exige execução. Saídas esperadas dos tutoriais não co
 | OPT-01 | Tracing via Collector/Tempo existente | NOT_RUN | módulo opcional; sem trace desta implantação |
 | OPT-02 | Kiali, Vault/PKI externa, HA/DR/carga | NOT_RUN | fora desta fase; backlog explícito |
 
-Há FAIL no inventário final da infraestrutura OLM existente. Nenhum teste dinâmico dos novos cenários foi executado. Isso não equivale a aprovação funcional. BLOCKED registra a colisão encontrada; NOT_RUN registra trabalho ainda não executado. Publicação de YAML e CI verde não homologam o laboratório no cluster.
+A falha OLM observada em 26/10 não se reproduziu na leitura de 27/10: a stack existente estava Healthy. Nenhum teste dinâmico dos novos cenários foi executado. Isso não equivale a aprovação funcional. BLOCKED registra a colisão encontrada; NOT_RUN registra trabalho ainda não executado. Publicação de YAML e CI verde não homologam o laboratório no cluster.

@@ -28,7 +28,7 @@ Todos os scripts operacionais fixam `--context=crc-admin` e `--server=https://ap
 
 ## Troca segura de cenário pelo Argo CD
 
-As Applications opcionais estão propostas em `argocd-gitops/optional/service-mesh/`, fora do App-of-Apps. Não há sincronização automática. O mesmo Application `mesh-apps-lab` troca apenas `spec.source.path`.
+As Applications opcionais estão versionadas em `argocd-gitops/optional/service-mesh/`, fora do App-of-Apps. Não há sincronização automática. O mesmo Application `mesh-apps-lab` troca apenas `spec.source.path`.
 
 ```bash
 # Exemplo operacional esperado, ainda não executado.
