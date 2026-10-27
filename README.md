@@ -9,19 +9,19 @@ Exemplos e infraestrutura declarativos para estudar rede, segurança e observabi
 1. Ler [instalação](docs/INSTALACAO-CRC.md) e [requisitos](docs/REQUISITOS.md).
 2. Conferir contexto e recursos com `bash scripts/preflight.sh` (somente leitura).
 3. Validar fontes com `bash scripts/validate.sh` (kubectl, Python/PyYAML/jsonschema, Kubeconform 0.7.0 e ShellCheck).
-4. Manter Operator, plano de controle e monitoramento no Argo CD; aplicar os cenários manualmente pelo projeto mesh-apps-lab.
+4. Manter Operator, plano de controle e monitoramento na Application `service-mesh` do Argo CD; aplicar os cenários manualmente pelo projeto mesh-apps-lab.
 
 ## Entradas Kustomize
 
 | Caminho | Uso |
 |---|---|
 | operator/ | Subscription 3.4.3, canal stable-3.4, aprovação Manual |
-| overlays/desenvolvimento/ | Istio v1.30.5, IstioCNI, tag mesh-stable e namespaces |
+| overlays/desenvolvimento/ | infraestrutura completa: Operator, namespaces, CNI, Istio v1.30.5, tag mesh-stable e monitores, com sync waves |
 | monitoring/ | PodMonitor/ServiceMonitor RHOBS para Prometheus existente |
 | optional/tracing/ | alternativa ao overlay principal, com provider OTLP existente |
 | assets/grafana/ | CRs de referência; integração no grafana-gitops |
 
-Instalar em fases. O tracing é **alternativa** à mesma fonte do plano de controle, nunca um segundo Application concorrente para o mesmo Istio. Os assets Grafana não são parte da base e não devem ter dois proprietários. Sem Kiali, Vault, Prometheus/Grafana/Tempo adicionais. [Procedência dos schemas e versões](docs/PROCEDENCIA.md).
+Sincronizar a Application `service-mesh`; as waves ordenam as dependências. O tracing é **alternativa** à fonte completa da mesma Application, nunca um segundo proprietário do Istio. Os assets Grafana não são parte da base e não devem ter dois proprietários. Sem Kiali, Vault, Prometheus/Grafana/Tempo adicionais. [Procedência dos schemas e versões](docs/PROCEDENCIA.md).
 
 ## Guias
 
