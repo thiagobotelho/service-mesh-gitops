@@ -1,6 +1,6 @@
 # Exercícios por fase
 
-Todos os resultados desta tabela são **esperados**, não resultados executados. Os testes dinâmicos aguardam implantação autorizada.
+A tabela apresenta os resultados esperados e os scripts de cada fase. Instale os pré-requisitos e sincronize o cenário correspondente antes de executar.
 
 | Fase | Teste | Resultado esperado | Script no mesh-apps-lab |
 |---|---|---|---|
@@ -27,4 +27,4 @@ istioctl --context=crc-admin proxy-status
 
 Cada teste rejeita divergências com código 1; pré-requisito ou acesso indisponível usa código 2 (`BLOCKED`). Erro de DNS (curl 6) nunca conta como bloqueio de NetworkPolicy. O teste positivo imediatamente anterior também detecta destino indisponível. Erros não reconhecidos exigem investigação; não ampliar arbitrariamente a lista para fazer o teste passar.
 
-Para registrar execução real, criar arquivo Markdown `docs/reports/local-AAAA-MM-DD.md`, ignorado pelo Git. Anotar data, contexto, revisão de código e cenário, comandos e códigos de saída, evidências sanitizadas e resultado PASS/FAIL/BLOCKED/NOT_RUN. Não registrar cookies, tokens, kubeconfig ou dados de Secrets.
+Armazene registros de execução em diretório externo ao checkout. Não registre cookies, tokens, kubeconfig ou dados de Secrets.
