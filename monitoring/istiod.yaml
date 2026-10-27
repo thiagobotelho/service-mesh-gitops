@@ -13,6 +13,9 @@ spec:
   selector:
     matchLabels:
       app: istiod
+    matchExpressions:
+    - key: istio.io/tag
+      operator: DoesNotExist
   endpoints:
   - port: http-monitoring
     path: /metrics
