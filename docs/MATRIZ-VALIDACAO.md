@@ -17,7 +17,7 @@ Data: 26/10/2026. PASS exige execução. Saídas esperadas dos tutoriais não co
 | OBS-00 | Sintaxe das 12 consultas PromQL | PASS | API real Prometheus aceitou; sem séries Istio; absent() retornou sentinela |
 | OWN-01 | Adoção dos exercícios preexistentes | BLOCKED | httpbin/sleep sem marca de propriedade; revisar colisão antes de sincronizar |
 | INT-01 | Publicação dos diffs nos sete existentes | NOT_RUN | propostas locais; nenhum commit ou PR realizado |
-| CI-01 | GitHub Actions dos novos repositórios | NOT_RUN | aguardar publicação; registrar run/commit real no relatório final |
+| CI-01 | GitHub Actions dos novos repositórios | PASS | pipelines de implementação concluídos; commits e runs no relatório final |
 | A | Baseline sleep e sleep-denied HTTP 200 | NOT_RUN | implantação ainda não autorizada; recursos não aplicados |
 | B | NetworkPolicy: 200 e timeout, DNS preservado | NOT_RUN | executar cenário 02 |
 | C | Sidecar e plano de controle prontos | NOT_RUN | Operator/Istio/CNI ainda não instalados |
