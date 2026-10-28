@@ -80,6 +80,8 @@ Requer promtool no PATH. O teste usa séries sintéticas locais para cobrir disp
 
 ### Tracing
 
+O namespace do Collector deve corresponder aos discoverySelectors do Istiod. O overlay desenvolvimento de opentelemetry-gitops fornece `istio-discovery: mesh-crc`; essa label permite descoberta do Service, sem injetar proxy. Confira os logs do Istiod se o provider OTLP não aparecer na configuração Envoy.
+
 O perfil usa Telemetry no namespace raiz do mesh, provider otel-existente e amostragem de 10%. Aplicações precisam propagar o contexto de tracing entre chamadas para preservar um trace distribuído. A injeção de proxy não instrumenta métodos internos nem consultas ao banco.
 
 No Kiali, abra o workload e consulte Traces; no Grafana, use Tempo. Links externos usam a Route Grafana do perfil CRC: ajuste-a para seu domínio. TLS para Tempo permanece validado. Para validar um trace específico, envie uma chamada com contexto W3C conhecido e consulte o ID no backend, sem registrar credenciais.
