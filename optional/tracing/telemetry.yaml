@@ -2,7 +2,6 @@ apiVersion: telemetry.istio.io/v1
 kind: Telemetry
 metadata:
   name: mesh-lab-tracing
-  # Namespace deste objeto; não confundir com seleção de namespaces de origem.
   namespace: mesh-lab
   labels:
     laboratorio.sre.dev/proprietario: service-mesh-gitops

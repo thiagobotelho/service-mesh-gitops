@@ -2,7 +2,6 @@ apiVersion: monitoring.rhobs/v1
 kind: PodMonitor
 metadata:
   name: mesh-lab-envoy
-  # Namespace deste objeto; não confundir com seleção de namespaces de origem.
   namespace: istio-system
   labels:
     observability: platform
