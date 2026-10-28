@@ -66,7 +66,7 @@ sum by (source_workload,connection_security_policy,response_code) (
 )
 ```
 
-Consulte no Prometheus Apps ou Grafana. `connection_security_policy="mutual_tls"` é evidência para as requisições observadas, não uma garantia sobre todos os caminhos. Contadores de listener/TLS são habilitados seletivamente; ausência de séries deve ser apresentada como sem dados, não zero.
+Consulte no Prometheus Apps ou Grafana. `connection_security_policy="mutual_tls"` é evidência para as requisições observadas, não uma garantia sobre todos os caminhos. Os contadores `envoy_listener_no_filter_chain_match` e TLS são habilitados seletivamente; alterações em proxyStatsMatcher exigem recriar os pods para renovar o bootstrap. Ausência de séries deve ser apresentada como sem dados, não zero.
 
 Os alertas 5xx usam janela de 10 minutos, volume mínimo de 100 chamadas, proporção acima de 5% e persistência de 10 minutos. Recusas 403 usam janela de 15 minutos, mínimo de 200 chamadas, proporção acima de 30% e persistência de 15 minutos. O namespace mesh-lab é excluído para não notificar recusas intencionais. Ajuste exclusão e limiares antes de usar em outras aplicações. A MonitoringStack avalia as regras; entrega de notificações depende de configurar um Alertmanager/receiver.
 
