@@ -1,0 +1,14 @@
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: mesh-observability
+  namespace: istio-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  # Política no namespace raiz: amostragem padrão dos workloads deste mesh.
+  tracing:
+  - providers:
+    - name: otel-existente
+    randomSamplingPercentage: 10

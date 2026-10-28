@@ -18,6 +18,7 @@ Exemplos e infraestrutura declarativos para estudar rede, segurança e observabi
 | operator/ | Subscription 3.4.3, canal stable-3.4, aprovação automática |
 | overlays/desenvolvimento/ | infraestrutura completa: Operator, namespaces, CNI, Istio v1.30.5, tag mesh-stable e monitores, com sync waves |
 | monitoring/ | PodMonitor/ServiceMonitor RHOBS para Prometheus existente |
+| optional/observability/ | infraestrutura, Kiali, tracing amostrado e alertas de segurança |
 | optional/kiali/ | infraestrutura completa com Kiali, OAuth OpenShift e Prometheus existente |
 | optional/tracing/ | alternativa ao overlay principal, com provider OTLP existente |
 | assets/grafana/ | CRs de referência; integração no grafana-gitops |
@@ -25,6 +26,8 @@ Exemplos e infraestrutura declarativos para estudar rede, segurança e observabi
 Sincronizar a Application `service-mesh`; as waves ordenam as dependências. O tracing é **alternativa** à fonte completa da mesma Application, nunca um segundo proprietário do Istio. Os assets Grafana não são parte da base e não devem ter dois proprietários. Kiali é opcional; não instala Vault nem Prometheus/Grafana/Tempo adicionais. [Procedência dos schemas e versões](docs/PROCEDENCIA.md).
 
 ## Guias
+
+- [Observabilidade, segurança e tracing](docs/OBSERVABILIDADE.md)
 
 - [Kiali: instalação e grafo do mesh](docs/KIALI.md)
 
