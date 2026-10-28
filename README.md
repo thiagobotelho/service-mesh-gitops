@@ -49,3 +49,7 @@ Documentação operacional em Markdown/português. YAML, shell, JSON e testes ma
 ## Aprender a configuração
 
 Consulte o [guia comentado](docs/APRENDIZADO.md) para entender componentes, escolhas, testes positivos/negativos e reversão.
+
+## PKI externa opcional
+
+`optional/vault-lab/` cria o plano de controle isolado mesh-vault e a tag vault-stable, após Issuer/IstioCSR prontos. `optional/observability-vault/` mantém o perfil de observabilidade do mesh original e permite ao Kiali descobrir os dois planos de controle. Consulte o [fluxo de integração](https://github.com/thiagobotelho/cert-manager-gitops/blob/main/docs/INTEGRACAO-MESH.md). Os workloads ficam em mesh-apps-lab/scenarios/07-vault-pki.

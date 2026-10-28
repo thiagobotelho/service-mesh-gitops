@@ -1,0 +1,54 @@
+apiVersion: sailoperator.io/v1
+kind: Istio
+metadata:
+  name: mesh-vault
+  labels:
+    laboratorio.sre.dev/proprietario: service-mesh-gitops
+spec:
+  namespace: istio-vault-system
+  version: v1.30.5
+  updateStrategy:
+    type: InPlace
+  values:
+    pilot:
+      autoscaleEnabled: false
+      replicaCount: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+      env:
+        ENABLE_CA_SERVER: 'false'
+    meshConfig:
+      trustDomain: cluster.local
+      discoverySelectors:
+      - matchLabels:
+          istio-discovery: mesh-vault
+      accessLogFile: /dev/stdout
+      accessLogEncoding: JSON
+      accessLogFormat: "{\n  \"start_time\": \"%START_TIME%\",\n  \"method\": \"%REQ(:METHOD)%\"\
+        ,\n  \"path\": \"%REQ_WITHOUT_QUERY(:PATH)%\",\n  \"protocol\": \"%PROTOCOL%\"\
+        ,\n  \"response_code\": \"%RESPONSE_CODE%\",\n  \"response_flags\": \"%RESPONSE_FLAGS%\"\
+        ,\n  \"response_code_details\": \"%RESPONSE_CODE_DETAILS%\",\n  \"connection_termination_details\"\
+        : \"%CONNECTION_TERMINATION_DETAILS%\",\n  \"downstream_remote_address\":\
+        \ \"%DOWNSTREAM_REMOTE_ADDRESS%\",\n  \"downstream_local_address\": \"%DOWNSTREAM_LOCAL_ADDRESS%\"\
+        ,\n  \"upstream_host\": \"%UPSTREAM_HOST%\",\n  \"upstream_cluster\": \"%UPSTREAM_CLUSTER_RAW%\"\
+        ,\n  \"duration_ms\": \"%DURATION%\",\n  \"bytes_received\": \"%BYTES_RECEIVED%\"\
+        ,\n  \"bytes_sent\": \"%BYTES_SENT%\",\n  \"request_id\": \"%REQ(X-REQUEST-ID)%\"\
+        ,\n  \"trace_id\": \"%TRACE_ID%\",\n  \"downstream_tls_version\": \"%DOWNSTREAM_TLS_VERSION%\"\
+        ,\n  \"downstream_peer_uri_san\": \"%DOWNSTREAM_PEER_URI_SAN%\",\n  \"upstream_transport_failure_reason\"\
+        : \"%UPSTREAM_TRANSPORT_FAILURE_REASON%\"\n}\n"
+      defaultConfig:
+        proxyStatsMatcher:
+          inclusionRegexps:
+          - .*no_filter_chain_match
+          - .*ssl.connection_error
+          - .*ssl.fail_verify_no_cert
+          - .*ssl.fail_verify_error
+        proxyMetadata:
+          SECRET_TTL: 1h
+    global:
+      caAddress: cert-manager-istio-csr.istio-csr-vault.svc:443
