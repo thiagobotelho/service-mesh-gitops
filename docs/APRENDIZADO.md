@@ -2,7 +2,7 @@
 
 ## O que observar
 
-Namespace precede Subscription; após Operator pronto e InstallPlan aprovado, vêm CNI, Istio, tag e monitores. Sync waves ordenam recursos dentro da Application; não aprovam InstallPlan. Synced é convergência declarativa, Healthy depende das regras de saúde. A tag pode estar reconciliada e sem clientes.
+Namespace precede Subscription; após Operator pronto e InstallPlan aprovado, vêm CNI, Istio, tag e monitores. Sync waves ordenam recursos dentro da Application; a aprovação automática do InstallPlan é responsabilidade do OLM, configurada na Subscription. Synced é convergência declarativa, Healthy depende das regras de saúde. A tag pode estar reconciliada e sem clientes.
 
 ## Roteiro de leitura e validação
 

@@ -31,7 +31,7 @@ oc apply -k optional/service-mesh
 oc -n openshift-gitops get applications.argoproj.io
 ```
 
-Esse diretório cadastra a Application `service-mesh`, com sincronização manual, reunindo Operator, CNI, plano de controle, tag e monitores em etapas ordenadas por sync waves. As APIs de teste ficam fora do Argo CD. Os componentes são instalados durante a sincronização. Configure previamente as verificações de saúde Sail de argocd-gitops/base/argocd.yaml e confira as CRDs de monitoramento. Não faz parte da stack base.
+Esse diretório cadastra a Application `service-mesh`, com sincronização automática e self-heal, sem prune automático, reunindo Operator, CNI, plano de controle, tag e monitores em etapas ordenadas por sync waves. As APIs de teste ficam fora do Argo CD. Os componentes são instalados durante a sincronização. Configure previamente as verificações de saúde Sail de argocd-gitops/base/argocd.yaml e confira as CRDs de monitoramento. Não faz parte da stack base.
 
 ## 3. Preparar os exercícios manuais
 
@@ -39,14 +39,14 @@ No repositório mesh-apps-lab, revise os recursos existentes e siga o [guia manu
 
 ## 4. Instalar o Operator
 
-Sincronize `service-mesh`. A etapa da Subscription precede os recursos Sail; acompanhe sua saúde no Argo CD. A Subscription usa aprovação Manual. Inspecione o InstallPlan e aprove apenas o plano da versão escolhida; não aprove todos os planos do namespace compartilhado.
+A sincronização de `service-mesh` inicia automaticamente. A etapa da Subscription precede os recursos Sail; acompanhe sua saúde no Argo CD. A Subscription usa aprovação automática para instalação e atualizações no canal `stable-3.4`. `startingCSV` define a versão inicial, sem fixar as atualizações seguintes.
 
 ```bash
 oc -n openshift-operators get subscription,installplan,csv
 oc get crds | grep -E 'sailoperator|istio'
 ```
 
-Na primeira instalação, a sincronização aguarda aprovação do InstallPlan; após aprová-lo, aguarde CSV Succeeded e CRDs Established. A opção SkipDryRunOnMissingResource dos recursos Sail não substitui esse requisito. Não crie outro OperatorGroup em openshift-operators.
+Aguarde CSV Succeeded e CRDs Established. Se a Subscription já possuía um InstallPlan manual antes da mudança, confira o plano referenciado em `status.installPlanRef` e aprove somente esse plano pendente uma vez; a mudança de política não deve ser tratada como garantia de aprovação retroativa. A opção SkipDryRunOnMissingResource dos recursos Sail não substitui esse requisito. Não crie outro OperatorGroup em openshift-operators.
 
 ## 5. Instalar o plano de controle
 

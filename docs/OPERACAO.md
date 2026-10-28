@@ -2,7 +2,7 @@
 
 ## Separar infraestrutura e exercícios
 
-No Argo CD, sincronize a Application `service-mesh`, que reúne Operator, CNI, plano de controle, tag e monitores. As sync waves respeitam a ordem de dependências; acompanhe a saúde de cada etapa.
+No Argo CD, acompanhe a Application `service-mesh` com auto-sync e self-heal, sem prune automático, que reúne Operator, CNI, plano de controle, tag e monitores. As sync waves respeitam a ordem de dependências; acompanhe a saúde de cada etapa.
 
 As APIs de teste são operadas manualmente no repositório mesh-apps-lab. Para alternar cenários, use oc apply -k e remova apenas os recursos exclusivos da fase anterior conforme [APLICACAO-MANUAL.md](APLICACAO-MANUAL.md).
 
@@ -29,7 +29,7 @@ O script limita duração e taxa; não use carga ilimitada em OpenShift Local. A
 
 ## Atualizar versões
 
-Revise compatibilidade e notas de versão. Atualize Subscription, versão Istio/CNI e imagens em conjunto quando necessário. Preserve aprovação Manual de InstallPlans. Inspecione a revisão ativa, tag, webhooks e rollouts antes de remover revisões antigas.
+Revise compatibilidade e notas de versão. Atualize Subscription, versão Istio/CNI e imagens em conjunto quando necessário. A Subscription aprova automaticamente os InstallPlans do canal `stable-3.4`, inclusive atualizações futuras; `startingCSV` não fixa a versão instalada. Para controlar cada atualização, altere `operator/subscription.yaml` para `installPlanApproval: Manual` antes da próxima atualização. Inspecione a revisão ativa, tag, webhooks e rollouts antes de remover revisões antigas.
 
 ## Desinstalar
 

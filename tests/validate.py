@@ -70,7 +70,7 @@ else:
   require(int(ann['argocd.argoproj.io/sync-wave'])==expected[d['kind']],'ordem de dependência incorreta')
   if d['apiVersion'].startswith('sailoperator.io/'):
    require(ann.get('argocd.argoproj.io/sync-options')=='SkipDryRunOnMissingResource=true','dry-run bloqueia instalação inicial de CRDs Sail')
- require(next(d for d in unified if d['kind']=='Subscription')['spec']['installPlanApproval']=='Manual','aprovação do Operator alterada')
+ require(next(d for d in unified if d['kind']=='Subscription')['spec']['installPlanApproval']=='Automatic','aprovação do Operator alterada')
  require({(d['kind'],d['metadata']['name']) for d in unified}.issubset({(d['kind'],d['metadata']['name']) for d in builds['optional/tracing']}),'tracing perde a infraestrutura unificada')
  control=builds['base']
  tag=next(d for d in control if d['kind']=='IstioRevisionTag')

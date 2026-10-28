@@ -8,7 +8,8 @@ metadata:
     laboratorio.sre.dev/proprietario: service-mesh-gitops
 spec:
   channel: stable-3.4
-  installPlanApproval: Manual
+  # Instala e atualiza automaticamente dentro do canal selecionado.
+  installPlanApproval: Automatic
   name: servicemeshoperator3
   source: redhat-operators
   sourceNamespace: openshift-marketplace
