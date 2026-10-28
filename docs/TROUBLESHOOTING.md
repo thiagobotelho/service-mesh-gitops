@@ -3,7 +3,7 @@
 | Sintoma | Conferência | Ação a revisar |
 |---|---|---|
 | BLOCKED por propriedade | check-ownership.sh; objetos com nomes conflitantes | revisar diff de adoção ou migrar exercícios; não apagar mesh-lab |
-| Subscription pendente | Subscription/InstallPlan/CSV em openshift-operators | aprovar somente InstallPlan revisado; conferir acesso registry.redhat.io |
+| Subscription pendente | Subscription/InstallPlan/CSV em openshift-operators | conferir política Automatic e plano referenciado; se herdado de aprovação Manual, revisar e aprovar somente esse plano; conferir acesso registry.redhat.io |
 | CRD não encontrada | CSV e Established | aguardar Operator antes dos CRs; sem APIs do Service Mesh 2 |
 | Pod permanece 1/1 | tag, revisão real, namespace discovery, anotação de injeção, webhook | conferir Istio/CNI; recriar pelo rollout após diff, sem SCC anyuid |
 | Erro de init/proxy/SCC | eventos sanitizados; imagem; UID atribuído | manter restricted-v2 nos workloads; não conceder privilégios ao cliente |

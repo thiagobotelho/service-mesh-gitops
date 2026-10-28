@@ -15,7 +15,7 @@ Exemplos e infraestrutura declarativos para estudar rede, segurança e observabi
 
 | Caminho | Uso |
 |---|---|
-| operator/ | Subscription 3.4.3, canal stable-3.4, aprovação Manual |
+| operator/ | Subscription 3.4.3, canal stable-3.4, aprovação automática |
 | overlays/desenvolvimento/ | infraestrutura completa: Operator, namespaces, CNI, Istio v1.30.5, tag mesh-stable e monitores, com sync waves |
 | monitoring/ | PodMonitor/ServiceMonitor RHOBS para Prometheus existente |
 | optional/tracing/ | alternativa ao overlay principal, com provider OTLP existente |
