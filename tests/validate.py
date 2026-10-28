@@ -91,3 +91,21 @@ else:
  embedded=next(d for d in builds['assets/grafana'] if d['kind']=='GrafanaDashboard')
  require(json.loads(embedded['spec']['json'])==dash,'dashboard JSON e CR divergentes')
 print(f'PASS: {len(builds)} entradas Kustomize, YAML/JSON, links e contratos semânticos')
+
+# O perfil Kiali deve preservar a infraestrutura e limitar o acesso ao Prometheus.
+kiali_profile=builds['optional/kiali']
+require(len(kiali_profile)==len(unified)+3,'Kiali não preserva infraestrutura ou adiciona recursos inesperados')
+for entry in unified:
+ require(entry in kiali_profile,'Kiali altera infraestrutura existente')
+kiali=next(d for d in kiali_profile if d['kind']=='Kiali')
+require(kiali['spec']['auth']['strategy']=='openshift','Kiali sem OAuth OpenShift')
+require(kiali['spec']['deployment']['view_only_mode'] is True,'Kiali permite escrita fora do Git')
+require(kiali['spec']['deployment']['cluster_wide_access'] is False,'Kiali com escopo global')
+require(kiali['spec']['external_services']['prometheus']['url']=='http://apps-monitoring-prometheus.observability-apps.svc:9090','Kiali consulta Prometheus incorreto')
+policy=next(d for d in kiali_profile if d['kind']=='NetworkPolicy')
+peer=policy['spec']['ingress'][0]['from']
+require(len(peer)==1 and 'podSelector' in peer[0] and 'namespaceSelector' in peer[0],'NetworkPolicy usa OU em vez de E')
+require(peer[0]['namespaceSelector']['matchLabels']=={'kubernetes.io/metadata.name':'istio-system'},'origem fora do namespace Kiali')
+require(peer[0]['podSelector']['matchLabels']=={'app.kubernetes.io/name':'kiali'},'origem ampla no namespace')
+require(policy['spec']['ingress'][0]['ports']==[{'protocol':'TCP','port':9090}],'porta Prometheus alterada')
+print('PASS: perfil Kiali isolado, OAuth, somente leitura e acesso específico ao Prometheus')
