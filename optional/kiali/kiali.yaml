@@ -1,0 +1,42 @@
+apiVersion: kiali.io/v1alpha1
+kind: Kiali
+metadata:
+  name: kiali
+  namespace: istio-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  version: default
+  auth:
+    # Reutiliza OAuth/RBAC do OpenShift, incluindo o IdP já configurado.
+    strategy: openshift
+  deployment:
+    # A interface consulta configurações; as alterações permanecem no Git.
+    view_only_mode: true
+    cluster_wide_access: false
+    discovery_selectors:
+      default:
+      - matchLabels:
+          istio-discovery: mesh-crc
+    ingress:
+      enabled: true
+    pod_annotations:
+      sidecar.istio.io/inject: "false"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  external_services:
+    prometheus:
+      # MonitoringStack existente; não usar o Prometheus da plataforma.
+      url: http://apps-monitoring-prometheus.observability-apps.svc:9090
+      auth:
+        type: none
+    grafana:
+      enabled: false
+    tracing:
+      enabled: false

@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-kiali-to-prometheus-apps
+  namespace: observability-apps
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus
+      prometheus: apps-monitoring
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    # Os dois seletores no mesmo item exigem namespace E Pod correspondentes.
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: istio-system
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: kiali
+    ports:
+    - protocol: TCP
+      port: 9090

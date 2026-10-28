@@ -82,4 +82,4 @@ Gere tráfego limitado, verifique as séries e abra o Grafana seguindo [GRAFANA.
 
 ## Tracing opcional
 
-optional/tracing é uma alternativa à fonte do plano de controle, reutilizando o Collector existente. Substitua o caminho da mesma Application por optional/tracing, que inclui toda a infraestrutura, sem criar um segundo proprietário do Istio. Confira serviço OTLP, conectividade e spans no Tempo antes de depender do drilldown. Kiali, Vault e PKI externa são módulos de evolução separados.
+optional/tracing é uma alternativa à fonte do plano de controle, reutilizando o Collector existente. Substitua o caminho da mesma Application por optional/tracing, que inclui toda a infraestrutura, sem criar um segundo proprietário do Istio. Confira serviço OTLP, conectividade e spans no Tempo antes de depender do drilldown. Vault e PKI externa são módulos de evolução separados. Para adicionar Kiali à mesma Application, siga [KIALI.md](KIALI.md).
