@@ -19,3 +19,5 @@ Schemas Sail: extraídos de `chart/crds` de [sail-operator 3.4.3](https://github
 - [Métricas Istio](https://istio.io/latest/docs/reference/config/metrics/). A página acompanha a versão corrente: confirme a unidade do histograma na instalação.
 - [Implementação de métricas na linha 1.30](https://github.com/istio/proxy/blob/release-1.30/source/extensions/filters/http/istio_stats/istio_stats.cc): define histograma de duração em milissegundos; confirme o nome e a unidade no scrape da versão instalada.
 
+
+O schema `PrometheusRule.json` reutiliza a API `monitoring.rhobs/v1` versionada em `prometheus-gitops/tests/crd-schemas/monitoring.rhobs__v1__PrometheusRule.json`. A expressão Go `^(?i)(abort|warn)?$` foi normalizada para `(?i)^(abort|warn)?$` para compatibilidade do validador Python, preservando o significado.

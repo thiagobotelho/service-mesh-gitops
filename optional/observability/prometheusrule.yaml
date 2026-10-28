@@ -1,0 +1,42 @@
+apiVersion: monitoring.rhobs/v1
+kind: PrometheusRule
+metadata:
+  name: mesh-security
+  namespace: istio-system
+  labels:
+    observability: platform
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  groups:
+  - name: mesh.security
+    rules:
+    # Namespace dos exercícios excluído para não alertar sobre recusas intencionais.
+    - alert: MeshHttp5xxPersistente
+      expr: >-
+        (sum by (destination_workload_namespace, destination_workload)
+        (increase(istio_requests_total{reporter="destination",destination_workload_namespace!="mesh-lab",response_code=~"5.."}[10m]))
+        / sum by (destination_workload_namespace, destination_workload)
+        (increase(istio_requests_total{reporter="destination",destination_workload_namespace!="mesh-lab"}[10m])) > 0.05)
+        and (sum by (destination_workload_namespace, destination_workload)
+        (increase(istio_requests_total{reporter="destination",destination_workload_namespace!="mesh-lab"}[10m])) >= 100)
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: Respostas 5xx persistentes no mesh
+        description: Mais de 5% de 5xx com pelo menos 100 requisições em 10 minutos. Verifique destino, dependências e logs do Envoy.
+    - alert: MeshRecusas403Persistentes
+      expr: >-
+        (sum by (destination_workload_namespace, destination_workload)
+        (increase(istio_requests_total{reporter="destination",destination_workload_namespace!="mesh-lab",response_code="403"}[15m]))
+        / sum by (destination_workload_namespace, destination_workload)
+        (increase(istio_requests_total{reporter="destination",destination_workload_namespace!="mesh-lab"}[15m])) > 0.3)
+        and (sum by (destination_workload_namespace, destination_workload)
+        (increase(istio_requests_total{reporter="destination",destination_workload_namespace!="mesh-lab"}[15m])) >= 200)
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: Respostas 403 persistentes no mesh
+        description: Mais de 30% de 403 com pelo menos 200 requisições em 15 minutos. Correlacione logs antes de atribuir a causa à autorização do mesh.

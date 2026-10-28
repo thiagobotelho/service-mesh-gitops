@@ -10,3 +10,5 @@ python3 "$RAIZ/tests/validate.py"
 python3 "$RAIZ/tests/test-scripts.py"
 
 python3 "$(dirname "$0")/../tests/test-prometheus-response.py"
+
+python3 "$RAIZ/tests/test-alerts.py"

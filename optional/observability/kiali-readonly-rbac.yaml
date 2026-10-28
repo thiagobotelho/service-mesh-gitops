@@ -1,0 +1,42 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kiali-mesh-injection-discovery
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+rules:
+# Descobrir tags de revisão exige listar webhooks; não concede escrita ou Secrets.
+- apiGroups: [admissionregistration.k8s.io]
+  resources: [mutatingwebhookconfigurations]
+  verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kiali-mesh-injection-discovery
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kiali-mesh-injection-discovery
+subjects:
+- kind: ServiceAccount
+  name: kiali-service-account
+  namespace: istio-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kiali-tempo-dev-traces-reader
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  # Papel mantido pelo repositório tempo-gitops para o tenant dev.
+  name: tempo-dev-traces-reader
+subjects:
+- kind: ServiceAccount
+  name: kiali-service-account
+  namespace: istio-system
